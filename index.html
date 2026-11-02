@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number System Converter | G01</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #173653, #167c80);
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 35px auto;
+        }
+
+        .converter {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            color: #173653;
+            margin-bottom: 22px;
+            font-size: 21px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 9px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            border-color: #16868a;
+            box-shadow: 0 0 0 2px rgba(22,134,138,0.12);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        button {
+            padding: 13px 20px;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .convert-btn {
+            background: #16868a;
+            color: white;
+            flex: 1;
+        }
+
+        .convert-btn:hover {
+            background: #116c70;
+        }
+
+        .clear-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .clear-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .result-box {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            padding: 18px;
+            border-radius: 9px;
+        }
+
+        .result-box h3 {
+            color: #0f766e;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .result-box p {
+            font-size: 23px;
+            font-weight: bold;
+            color: #173653;
+            word-break: break-all;
+        }
+
+        .steps {
+            margin-top: 30px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            padding: 20px;
+        }
+
+        .steps h2 {
+            margin-bottom: 15px;
+        }
+
+        #stepsContent {
+            line-height: 1.9;
+            font-size: 14px;
+            color: #475569;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 550px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .converter {
+                padding: 20px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Number System Converter</h1>
+        <p>Convert numbers easily between different number systems</p>
+    </header>
+
+    <main class="container">
+
+        <section class="converter">
+
+            <h2>Number Conversion</h2>
+
+            <label for="numberInput">Enter Your Number</label>
+            <input
+                type="text"
+                id="numberInput"
+                placeholder="Enter a number (e.g. 25)"
+                autocomplete="off"
+            >
+
+            <label for="baseSelect">Select Number System</label>
+            <select id="baseSelect">
+                <option value="10">Decimal (Base 10)</option>
+                <option value="2">Binary (Base 2)</option>
+                <option value="8">Octal (Base 8)</option>
+                <option value="16">Hexadecimal (Base 16)</option>
+            </select>
+
+            <div class="buttons">
+                <button class="convert-btn" onclick="convertNumber()">
+                    Convert
+                </button>
+
+                <button class="clear-btn" onclick="clearAll()">
+                    Clear
+                </button>
+            </div>
+
+            <p class="error" id="errorMessage"></p>
+
+            <section class="results">
+                <h2>Conversion Results</h2>
+
+                <div class="result-grid">
+
+                    <div class="result-box">
+                        <h3>DECIMAL (BASE 10)</h3>
+                        <p id="decimalResult">--</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>BINARY (BASE 2)</h3>
+                        <p id="binaryResult">--</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>OCTAL (BASE 8)</h3>
+                        <p id="octalResult">--</p>
+                    </div>
+
+                    <div class="result-box">
+                        <h3>HEXADECIMAL (BASE 16)</h3>
+                        <p id="hexResult">--</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="steps">
+                <h2>Conversion Steps</h2>
+                <div id="stepsContent">
+                    Enter a number and click Convert to see the steps.
+                </div>
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>G01 | Number System Converter</p>
+        <p>Computer Architecture Project</p>
+    </footer>
+
+    <script>
+
+        function convertNumber() {
+
+            const input = document.getElementById("numberInput").value.trim();
+            const base = Number(document.getElementById("baseSelect").value);
+            const error = document.getElementById("errorMessage");
+
+            error.style.display = "none";
+
+            if (input === "") {
+                showError("Please enter a number.");
+                return;
+            }
+
+            // Check whether the input is valid for the selected base
+            const patterns = {
+                2: /^[01]+$/,
+                8: /^[0-7]+$/,
+                10: /^[0-9]+$/,
+                16: /^[0-9a-fA-F]+$/
+            };
+
+            if (!patterns[base].test(input)) {
+                showError("Invalid number for the selected number system.");
+                return;
+            }
+
+            // Convert the input into a decimal BigInt
+            let decimal;
+
+            try {
+                decimal = BigInt(parseInt(input[0], base));
+
+                // Build the full value without losing large integers
+                decimal = 0n;
+
+                for (let char of input.toLowerCase()) {
+                    const digit = parseInt(char, 16);
+                    decimal = decimal * BigInt(base) + BigInt(digit);
+                }
+
+            } catch (e) {
+                showError("Unable to convert this number.");
+                return;
+            }
+
+            // Convert decimal into other number systems
+            const binary = decimal.toString(2);
+            const octal = decimal.toString(8);
+            const hexadecimal = decimal.toString(16).toUpperCase();
+
+            // Display conversion results
+            document.getElementById("decimalResult").textContent = decimal.toString(10);
+            document.getElementById("binaryResult").textContent = binary;
+            document.getElementById("octalResult").textContent = octal;
+            document.getElementById("hexResult").textContent = hexadecimal;
+
+            // Display binary conversion steps
+            showSteps(decimal);
+        }
+
+        function showError(message) {
+            const error = document.getElementById("errorMessage");
+            error.textContent = message;
+            error.style.display = "block";
+        }
+
+        function showSteps(number) {
+
+            const steps = document.getElementById("stepsContent");
+
+            if (number === 0n) {
+                steps.textContent = "0 in binary is 0.";
+                return;
+            }
+
+            let temp = number;
+            let result = "";
+
+            result += "Decimal to Binary Conversion:\n\n";
+
+            while (temp > 0n) {
+
+                let quotient = temp / 2n;
+                let remainder = temp % 2n;
+
+                result += temp + " ÷ 2 = " + quotient +
+                          " remainder " + remainder + "\n";
+
+                temp = quotient;
+            }
+
+            result += "\nRead the remainders from bottom to top.\n";
+            result += "Binary Answer: " + number.toString(2);
+
+            steps.textContent = result;
+        }
+
+        function clearAll() {
+
+            document.getElementById("numberInput").value = "";
+
+            document.getElementById("baseSelect").value = "10";
+
+            document.getElementById("decimalResult").textContent = "--";
+            document.getElementById("binaryResult").textContent = "--";
+            document.getElementById("octalResult").textContent = "--";
+            document.getElementById("hexResult").textContent = "--";
+
+            document.getElementById("stepsContent").textContent =
+                "Enter a number and click Convert to see the steps.";
+
+            document.getElementById("errorMessage").style.display = "none";
+        }
+
+    </script>
+
+</body>
+</html>
